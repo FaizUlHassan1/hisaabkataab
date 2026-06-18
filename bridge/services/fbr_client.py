@@ -40,6 +40,18 @@ class FBRClient:
         endpoint = endpoint.lstrip("/")
         return urljoin(self._get_base_url(environment), endpoint)
 
+    def _resolve_environment_url(
+        self,
+        endpoint_name: str | None,
+        environment: str | None = None,
+    ) -> str | None:
+        if not endpoint_name:
+            return None
+
+        env = (environment or self.environment).lower()
+        endpoint_urls = getattr(settings, "FBR_ENDPOINT_URLS", {})
+        return endpoint_urls.get(env, {}).get(endpoint_name)
+
     def _resolve_endpoint(self, endpoint_name: str | None, endpoint_path: str | None) -> str:
         if endpoint_path:
             return endpoint_path
@@ -102,11 +114,14 @@ class FBRClient:
             }
         """
         method = method.upper()
-        url = full_url or self._build_url(
-            self._resolve_endpoint(endpoint_name, endpoint_path),
-            environment=environment,
+        url = (
+            full_url
+            or self._resolve_environment_url(endpoint_name, environment=environment)
+            or self._build_url(
+                self._resolve_endpoint(endpoint_name, endpoint_path),
+                environment=environment,
+            )
         )
-        #url="https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb"
 
         logger.info("Forwarding %s request to FBR: %s", method, url)
 

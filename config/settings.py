@@ -105,6 +105,27 @@ FBR_ENDPOINTS = {
     ),
 }
 
+FBR_ENDPOINT_URLS = {
+    "sandbox": {
+        "post_invoice": os.environ.get(
+            "FBR_SANDBOX_POST_INVOICE_URL",
+            "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb",
+        ),
+    },
+    "sandbox_ssl": {
+        "post_invoice": os.environ.get(
+            "FBR_SANDBOX_SSL_POST_INVOICE_URL",
+            "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb",
+        ),
+    },
+    "production": {
+        "post_invoice": os.environ.get(
+            "FBR_PRODUCTION_POST_INVOICE_URL",
+            "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata",
+        ),
+    },
+}
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
