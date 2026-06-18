@@ -87,11 +87,11 @@ class FBRClient:
             }
         """
         method = method.upper()
-        # url = full_url or self._build_url(
-        #     self._resolve_endpoint(endpoint_name, endpoint_path),
-        #     environment=environment,
-        # )
-        url="https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb"
+        url = full_url or self._build_url(
+            self._resolve_endpoint(endpoint_name, endpoint_path),
+            environment=environment,
+        )
+        #url="https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb"
 
         logger.info("Forwarding %s request to FBR: %s", method, url)
 
