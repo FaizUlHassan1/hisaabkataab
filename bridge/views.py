@@ -165,7 +165,7 @@ class PostInvoiceViewProduction(APIView):
         fbr_url = get_fbr_url(body)
         endpoint_path = body.get("endpoint_path")
         client = FBRClient(environment=environment, security_token=fbr_token)
-
+        print(client)
         try:
             result = client.forward_request(
                 method="POST",
