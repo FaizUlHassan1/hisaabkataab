@@ -137,3 +137,4 @@ Register your Pakistan server IP with FBR (helpline@fbr.gov.pk) per FBR technica
 - Use HTTPS for ERP → bridge communication
 - Restrict firewall to allow only your ERP's IP if possible
 - Set `DEBUG=False` in production
+# hisaabkataab
