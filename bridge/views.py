@@ -29,6 +29,28 @@ def get_fbr_payload(body):
     return body if payload is None else payload
 
 
+def get_fbr_token(body):
+    return get_request_value(
+        body,
+        "fbr_token",
+        "fbr_authentication_token",
+        "fbr_security_token",
+        "fbrToken",
+        "token",
+        "auth_token",
+        "authorization_token",
+    )
+
+
+def get_fbr_url(body):
+    return get_request_value(
+        body,
+        "fbr_url",
+        "fbr_server_url",
+        "full_url",
+    )
+
+
 class HealthCheckView(APIView):
     """Public health check — no authentication required."""
 
@@ -140,25 +162,18 @@ class PostInvoiceViewProduction(APIView):
 
         invoice_data = get_fbr_payload(body)
         environment = body.get("environment") or request.query_params.get("environment") or "production"
-        fbr_token = get_request_value(
-            body,
-            "fbr_token",
-            "fbr_authentication_token",
-            "fbr_security_token",
-        )
+        fbr_token = get_fbr_token(body)
+        fbr_url = get_fbr_url(body)
+        endpoint_path = body.get("endpoint_path")
         client = FBRClient()
-    
-        print("PostInvoiceViewProduction","testing1")
-        print(invoice_data)
-        print(environment)
-        print(fbr_token)
-        print("PostInvoiceViewProduction","testing2")
-        
+
         try:
             result = client.forward_request(
                 method="POST",
                 data=invoice_data,
                 endpoint_name="post_invoice",
+                endpoint_path=endpoint_path,
+                full_url=fbr_url,
                 environment=environment,
                 security_token=fbr_token,
             )
@@ -199,12 +214,9 @@ class PostInvoiceViewSandbox(APIView):
 
         invoice_data = get_fbr_payload(body)
         environment = body.get("environment") or request.query_params.get("environment") or "sandbox"
-        fbr_token = get_request_value(
-            body,
-            "fbr_token",
-            "fbr_authentication_token",
-            "fbr_security_token",
-        )
+        fbr_token = get_fbr_token(body)
+        fbr_url = get_fbr_url(body)
+        endpoint_path = body.get("endpoint_path")
         client = FBRClient()
 
         try:
@@ -212,6 +224,8 @@ class PostInvoiceViewSandbox(APIView):
                 method="POST",
                 data=invoice_data,
                 endpoint_name="post_invoice",
+                endpoint_path=endpoint_path,
+                full_url=fbr_url,
                 environment=environment,
                 security_token=fbr_token,
             )

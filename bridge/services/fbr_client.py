@@ -59,8 +59,12 @@ class FBRClient:
         if not token:
             raise FBRClientError("FBR_SECURITY_TOKEN is not configured on the bridge server.")
 
+        authorization_value = (
+            token if token.lower().startswith("bearer ") else f"Bearer {token}"
+        )
+
         headers = {
-            "Authorization": f"Bearer {token}",
+            "Authorization": authorization_value,
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
