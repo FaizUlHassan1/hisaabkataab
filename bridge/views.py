@@ -104,7 +104,9 @@ class PostInvoiceView(APIView):
     Optional query param: ?environment=sandbox|sandbox_ssl|production
     """
 
+    print("PostInvoiceView","testing1")
     def post(self, request):
+        print("PostInvoiceView","testing2")
         invoice_data = request.data
 
         if not isinstance(invoice_data, dict):
