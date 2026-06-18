@@ -95,8 +95,14 @@ FBR_VERIFY_SSL = os.environ.get("FBR_VERIFY_SSL", "True").lower() in ("true", "1
 
 # Known FBR endpoint paths (relative to base URL)
 FBR_ENDPOINTS = {
-    "post_invoice": "DigitalInvoicing/v1/PostInvoiceData_v1",
-    "get_invoice_details": "DigitalInvoicing/v1/GetInvoiceDetails",
+    "post_invoice": os.environ.get(
+        "FBR_POST_INVOICE_ENDPOINT",
+        "di_data/v1/di/postinvoicedata",
+    ),
+    "get_invoice_details": os.environ.get(
+        "FBR_GET_INVOICE_DETAILS_ENDPOINT",
+        "DigitalInvoicing/v1/GetInvoiceDetails",
+    ),
 }
 
 LOGGING = {
