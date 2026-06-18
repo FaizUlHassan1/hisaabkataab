@@ -147,7 +147,13 @@ class PostInvoiceViewProduction(APIView):
             "fbr_security_token",
         )
         client = FBRClient()
-
+    
+        print("PostInvoiceViewProduction","testing1")
+        print(invoice_data)
+        print(environment)
+        print(fbr_token)
+        print("PostInvoiceViewProduction","testing2")
+        
         try:
             result = client.forward_request(
                 method="POST",
