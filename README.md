@@ -100,7 +100,7 @@ Content-Type: application/json
   "success": true,
   "status_code": 200,
   "data": { ... FBR response ... },
-  "fbr_url": "https://esp.fbr.gov.pk:8244/DigitalInvoicing/v1/PostInvoiceData_v1"
+  "fbr_url": "https://esp.fbr.gov.pk:8244/DigitalInvoicing/v1/di/PostInvoiceData_sb"
 }
 ```
 

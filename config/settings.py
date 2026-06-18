@@ -75,7 +75,8 @@ FBR_ENVIRONMENT = os.environ.get("FBR_ENVIRONMENT", "sandbox").lower()
 FBR_BASE_URLS = {
     "sandbox": os.environ.get(
         "FBR_SANDBOX_BASE_URL",
-        "https://esp.fbr.gov.pk:8244",
+       # "https://esp.fbr.gov.pk:8244",
+       "https://gw.fbr.gov.pk",
     ),
     "sandbox_ssl": os.environ.get(
         "FBR_SANDBOX_SSL_BASE_URL",
@@ -83,7 +84,7 @@ FBR_BASE_URLS = {
     ),
     "production": os.environ.get(
         "FBR_PRODUCTION_BASE_URL",
-        "https://gw.fbr.gov.pk/pdi/v1/api",
+        "https://gw.fbr.gov.pk",
     ),
 }
 
