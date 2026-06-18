@@ -102,7 +102,11 @@ class FBRProxyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        client = FBRClient()
+        fbr_token = get_fbr_token(body)
+        client = FBRClient(
+            environment=body.get("environment"),
+            security_token=fbr_token,
+        )
 
         try:
             result = client.forward_request(
@@ -114,12 +118,7 @@ class FBRProxyView(APIView):
                 environment=body.get("environment"),
                 extra_headers=body.get("headers"),
                 params=body.get("params"),
-                security_token=get_request_value(
-                    body,
-                    "fbr_token",
-                    "fbr_authentication_token",
-                    "fbr_security_token",
-                ),
+                security_token=fbr_token,
             )
         except FBRClientError as exc:
             logger.warning("FBR client error: %s", exc)
@@ -165,7 +164,7 @@ class PostInvoiceViewProduction(APIView):
         fbr_token = get_fbr_token(body)
         fbr_url = get_fbr_url(body)
         endpoint_path = body.get("endpoint_path")
-        client = FBRClient()
+        client = FBRClient(environment=environment, security_token=fbr_token)
 
         try:
             result = client.forward_request(
@@ -217,7 +216,7 @@ class PostInvoiceViewSandbox(APIView):
         fbr_token = get_fbr_token(body)
         fbr_url = get_fbr_url(body)
         endpoint_path = body.get("endpoint_path")
-        client = FBRClient()
+        client = FBRClient(environment=environment, security_token=fbr_token)
 
         try:
             result = client.forward_request(

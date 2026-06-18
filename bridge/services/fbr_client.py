@@ -18,9 +18,14 @@ class FBRClientError(Exception):
 class FBRClient:
     """HTTP client for forwarding requests to FBR Digital Invoicing APIs."""
 
-    def __init__(self):
-        self.environment = settings.FBR_ENVIRONMENT
-        self.security_token = settings.FBR_SECURITY_TOKEN
+    def __init__(
+        self,
+        *,
+        environment: str | None = None,
+        security_token: str | None = None,
+    ):
+        self.environment = environment or settings.FBR_ENVIRONMENT
+        self.security_token = security_token or settings.FBR_SECURITY_TOKEN
         self.timeout = settings.FBR_REQUEST_TIMEOUT
         self.verify_ssl = settings.FBR_VERIFY_SSL
 
@@ -57,7 +62,7 @@ class FBRClient:
     ) -> dict:
         token = security_token or self.security_token
         if not token:
-            raise FBRClientError("FBR_SECURITY_TOKEN is not configured on the bridge server.")
+            raise FBRClientError("FBR security token is not configured or provided.")
 
         authorization_value = (
             token if token.lower().startswith("bearer ") else f"Bearer {token}"
