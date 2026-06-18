@@ -50,12 +50,17 @@ class FBRClient:
 
         return settings.FBR_ENDPOINTS["post_invoice"]
 
-    def _get_headers(self, extra_headers: dict | None = None) -> dict:
-        if not self.security_token:
+    def _get_headers(
+        self,
+        extra_headers: dict | None = None,
+        security_token: str | None = None,
+    ) -> dict:
+        token = security_token or self.security_token
+        if not token:
             raise FBRClientError("FBR_SECURITY_TOKEN is not configured on the bridge server.")
 
         headers = {
-            "Authorization": f"Bearer {self.security_token}",
+            "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
@@ -74,6 +79,7 @@ class FBRClient:
         environment: str | None = None,
         extra_headers: dict | None = None,
         params: dict | None = None,
+        security_token: str | None = None,
     ) -> dict:
         """
         Forward a request to FBR and return a structured response.
@@ -100,7 +106,7 @@ class FBRClient:
                 method=method,
                 url=url,
                 json=data,
-                headers=self._get_headers(extra_headers),
+                headers=self._get_headers(extra_headers, security_token=security_token),
                 params=params,
                 timeout=self.timeout,
                 verify=self.verify_ssl,

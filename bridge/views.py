@@ -10,6 +10,25 @@ from bridge.services.fbr_client import FBRClient, FBRClientError
 logger = logging.getLogger(__name__)
 
 
+def get_request_value(body, *keys):
+    for key in keys:
+        value = body.get(key)
+        if value is not None:
+            return value
+    return None
+
+
+def get_fbr_payload(body):
+    payload = get_request_value(
+        body,
+        "fbr_request_body",
+        "fbr_body",
+        "fbr_payload",
+        "data",
+    )
+    return body if payload is None else payload
+
+
 class HealthCheckView(APIView):
     """Public health check — no authentication required."""
 
@@ -54,10 +73,10 @@ class FBRProxyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        data = body.get("data")
+        data = get_request_value(body, "data", "fbr_request_body", "fbr_body", "fbr_payload")
         if data is None:
             return Response(
-                {"error": "Missing required field: data"},
+                {"error": "Missing required field: data or fbr_request_body"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -73,6 +92,12 @@ class FBRProxyView(APIView):
                 environment=body.get("environment"),
                 extra_headers=body.get("headers"),
                 params=body.get("params"),
+                security_token=get_request_value(
+                    body,
+                    "fbr_token",
+                    "fbr_authentication_token",
+                    "fbr_security_token",
+                ),
             )
         except FBRClientError as exc:
             logger.warning("FBR client error: %s", exc)
@@ -94,7 +119,7 @@ class FBRProxyView(APIView):
         return Response(result, status=http_status)
 
 
-class PostInvoiceView(APIView):
+class PostInvoiceViewProduction(APIView):
     """
     Convenience endpoint for posting invoice data to FBR.
 
@@ -104,18 +129,23 @@ class PostInvoiceView(APIView):
     Optional query param: ?environment=sandbox|sandbox_ssl|production
     """
 
-    print("PostInvoiceView","testing1")
     def post(self, request):
-        print("PostInvoiceView","testing2")
-        invoice_data = request.data
+        body = request.data
 
-        if not isinstance(invoice_data, dict):
+        if not isinstance(body, dict):
             return Response(
                 {"error": "Invoice data must be a JSON object."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        environment = request.query_params.get("environment")
+        invoice_data = get_fbr_payload(body)
+        environment = body.get("environment") or request.query_params.get("environment") or "production"
+        fbr_token = get_request_value(
+            body,
+            "fbr_token",
+            "fbr_authentication_token",
+            "fbr_security_token",
+        )
         client = FBRClient()
 
         try:
@@ -124,6 +154,60 @@ class PostInvoiceView(APIView):
                 data=invoice_data,
                 endpoint_name="post_invoice",
                 environment=environment,
+                security_token=fbr_token,
+            )
+        except FBRClientError as exc:
+            return Response(
+                {
+                    "success": False,
+                    "error": str(exc),
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        http_status = (
+            status.HTTP_200_OK
+            if result["success"]
+            else status.HTTP_502_BAD_GATEWAY
+        )
+        return Response(result, status=http_status)
+
+class PostInvoiceViewSandbox(APIView):
+    """
+    Convenience endpoint for posting invoice data to FBR.
+
+    POST /api/v1/fbr/invoices/
+
+    Request body: FBR invoice JSON (sent directly as the payload).
+    Optional query param: ?environment=sandbox|sandbox_ssl|production
+    """
+
+    def post(self, request):
+        body = request.data
+
+        if not isinstance(body, dict):
+            return Response(
+                {"error": "Invoice data must be a JSON object."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        invoice_data = get_fbr_payload(body)
+        environment = body.get("environment") or request.query_params.get("environment") or "sandbox"
+        fbr_token = get_request_value(
+            body,
+            "fbr_token",
+            "fbr_authentication_token",
+            "fbr_security_token",
+        )
+        client = FBRClient()
+
+        try:
+            result = client.forward_request(
+                method="POST",
+                data=invoice_data,
+                endpoint_name="post_invoice",
+                environment=environment,
+                security_token=fbr_token,
             )
         except FBRClientError as exc:
             return Response(
