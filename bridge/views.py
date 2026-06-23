@@ -51,6 +51,109 @@ def get_fbr_url(body):
     )
 
 
+def get_environment(body, default="sandbox"):
+    return body.get("environment") or default
+
+
+def get_params(body):
+    params = body.get("params") or {}
+    return params if isinstance(params, dict) else None
+
+
+class FBRReferenceView(APIView):
+    """Forward FBR reference API requests through the bridge."""
+
+    endpoint_name = None
+    required_params = ()
+
+    def post(self, request):
+        body = request.data
+
+        if not isinstance(body, dict):
+            return Response(
+                {"error": "Request body must be a JSON object."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        params = get_params(body)
+        if params is None:
+            return Response(
+                {"error": "params must be a JSON object when provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        missing_params = [
+            param for param in self.required_params if params.get(param) in (None, "")
+        ]
+        if missing_params:
+            return Response(
+                {
+                    "error": "Missing required params.",
+                    "missing_params": missing_params,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        environment = get_environment(body)
+        fbr_token = get_fbr_token(body)
+        fbr_url = get_fbr_url(body)
+        client = FBRClient(environment=environment, security_token=fbr_token)
+
+        logger.info(
+            "Forwarding FBR reference endpoint=%s environment=%s token_present=%s",
+            self.endpoint_name,
+            environment,
+            bool(fbr_token),
+        )
+
+        try:
+            result = client.forward_request(
+                method="GET",
+                endpoint_name=self.endpoint_name,
+                full_url=fbr_url,
+                environment=environment,
+                params=params,
+                security_token=fbr_token,
+            )
+        except FBRClientError as exc:
+            logger.warning(
+                "FBR reference client error endpoint=%s environment=%s token_present=%s error=%s",
+                self.endpoint_name,
+                environment,
+                bool(fbr_token),
+                exc,
+            )
+            return Response(
+                {
+                    "success": False,
+                    "error": str(exc),
+                    "status_code": exc.status_code,
+                    "data": exc.response_body,
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        http_status = (
+            status.HTTP_200_OK
+            if result["success"]
+            else status.HTTP_502_BAD_GATEWAY
+        )
+        return Response(result, status=http_status)
+
+
+class FBRItemCodesReferenceView(FBRReferenceView):
+    endpoint_name = "item_codes"
+
+
+class FBRUOMReferenceView(FBRReferenceView):
+    endpoint_name = "uoms"
+
+
+class FBRHSUOMReferenceView(FBRReferenceView):
+    endpoint_name = "hs_uom"
+    required_params = ("hs_code", "annexure_id")
+
+
 class HealthCheckView(APIView):
     """Public health check — no authentication required."""
 

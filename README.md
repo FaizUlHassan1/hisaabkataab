@@ -93,6 +93,30 @@ Content-Type: application/json
 { ... query JSON ... }
 ```
 
+### FBR reference APIs
+
+All reference endpoints are protected by `X-API-Key` and call FBR with the `fbr_token`
+provided in the request body.
+
+```
+POST /api/v1/fbr/reference/item-codes/
+POST /api/v1/fbr/reference/uoms/
+POST /api/v1/fbr/reference/hs-uom/
+```
+
+Example HS codes:
+
+```json
+{
+  "environment": "sandbox",
+  "fbr_token": "company-fbr-token",
+  "params": {
+    "hs_code": "7018.1000",
+    "annexure_id": 3
+  }
+}
+```
+
 ## Response format
 
 ```json

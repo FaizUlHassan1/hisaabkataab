@@ -122,19 +122,31 @@ class FBRClient:
                 environment=environment,
             )
         )
+        active_environment = (environment or self.environment).lower()
+        token_present = bool(security_token or self.security_token)
 
-        logger.info("Forwarding %s request to FBR: %s", method, url)
+        logger.info(
+            "Forwarding FBR request endpoint=%s environment=%s method=%s token_present=%s url=%s",
+            endpoint_name or endpoint_path or "custom",
+            active_environment,
+            method,
+            token_present,
+            url,
+        )
+
+        request_kwargs = {
+            "method": method,
+            "url": url,
+            "headers": self._get_headers(extra_headers, security_token=security_token),
+            "params": params,
+            "timeout": self.timeout,
+            "verify": self.verify_ssl,
+        }
+        if method not in {"GET", "HEAD"}:
+            request_kwargs["json"] = data
 
         try:
-            response = requests.request(
-                method=method,
-                url=url,
-                json=data,
-                headers=self._get_headers(extra_headers, security_token=security_token),
-                params=params,
-                timeout=self.timeout,
-                verify=self.verify_ssl,
-            )
+            response = requests.request(**request_kwargs)
         except requests.exceptions.SSLError as exc:
             logger.exception("SSL error connecting to FBR")
             raise FBRClientError(
@@ -160,7 +172,13 @@ class FBRClient:
             "fbr_url": url,
         }
 
-        logger.info("FBR responded with status %s", response.status_code)
+        logger.info(
+            "FBR response endpoint=%s environment=%s status=%s token_present=%s",
+            endpoint_name or endpoint_path or "custom",
+            active_environment,
+            response.status_code,
+            token_present,
+        )
         return result
 
     @staticmethod

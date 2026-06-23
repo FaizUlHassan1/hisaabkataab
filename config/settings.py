@@ -111,17 +111,53 @@ FBR_ENDPOINT_URLS = {
             "FBR_SANDBOX_POST_INVOICE_URL",
             "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb",
         ),
+        "item_codes": os.environ.get(
+            "FBR_SANDBOX_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/itemdesccode",
+        ),
+        "uoms": os.environ.get(
+            "FBR_SANDBOX_UOMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/uom",
+        ),
+        "hs_uom": os.environ.get(
+            "FBR_SANDBOX_HS_UOM_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
+        ),
     },
     "sandbox_ssl": {
         "post_invoice": os.environ.get(
             "FBR_SANDBOX_SSL_POST_INVOICE_URL",
             "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb",
         ),
+        "item_codes": os.environ.get(
+            "FBR_SANDBOX_SSL_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/itemdesccode",
+        ),
+        "uoms": os.environ.get(
+            "FBR_SANDBOX_SSL_UOMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/uom",
+        ),
+        "hs_uom": os.environ.get(
+            "FBR_SANDBOX_SSL_HS_UOM_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
+        ),
     },
     "production": {
         "post_invoice": os.environ.get(
             "FBR_PRODUCTION_POST_INVOICE_URL",
             "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata",
+        ),
+        "item_codes": os.environ.get(
+            "FBR_PRODUCTION_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/itemdesccode",
+        ),
+        "uoms": os.environ.get(
+            "FBR_PRODUCTION_UOMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/uom",
+        ),
+        "hs_uom": os.environ.get(
+            "FBR_PRODUCTION_HS_UOM_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
         ),
     },
 }
