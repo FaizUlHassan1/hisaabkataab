@@ -154,6 +154,21 @@ class FBRHSUOMReferenceView(FBRReferenceView):
     required_params = ("hs_code", "annexure_id")
 
 
+class FBRRatesReferenceView(FBRReferenceView):
+    endpoint_name = "rates"
+    required_params = ("date", "transTypeId", "originationSupplier")
+
+
+class FBRSROSchedulesReferenceView(FBRReferenceView):
+    endpoint_name = "sro_schedules"
+    required_params = ("rate_id", "date", "origination_supplier_csv")
+
+
+class FBRSROItemsReferenceView(FBRReferenceView):
+    endpoint_name = "sro_items"
+    required_params = ("date", "sro_id")
+
+
 class HealthCheckView(APIView):
     """Public health check — no authentication required."""
 

@@ -102,6 +102,9 @@ provided in the request body.
 POST /api/v1/fbr/reference/item-codes/
 POST /api/v1/fbr/reference/uoms/
 POST /api/v1/fbr/reference/hs-uom/
+POST /api/v1/fbr/reference/rates/
+POST /api/v1/fbr/reference/sro-schedules/
+POST /api/v1/fbr/reference/sro-items/
 ```
 
 Example HS codes:
@@ -113,6 +116,47 @@ Example HS codes:
   "params": {
     "hs_code": "7018.1000",
     "annexure_id": 3
+  }
+}
+```
+
+Example rates:
+
+```json
+{
+  "environment": "sandbox",
+  "fbr_token": "company-fbr-token",
+  "params": {
+    "date": "24-Feb 2024",
+    "transTypeId": 18,
+    "originationSupplier": 1
+  }
+}
+```
+
+Example SRO schedules:
+
+```json
+{
+  "environment": "sandbox",
+  "fbr_token": "company-fbr-token",
+  "params": {
+    "rate_id": 413,
+    "date": "04-Feb 2024",
+    "origination_supplier_csv": 1
+  }
+}
+```
+
+Example SRO items:
+
+```json
+{
+  "environment": "sandbox",
+  "fbr_token": "company-fbr-token",
+  "params": {
+    "date": "2025-03-25",
+    "sro_id": 389
   }
 }
 ```

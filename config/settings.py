@@ -121,7 +121,19 @@ FBR_ENDPOINT_URLS = {
         ),
         "hs_uom": os.environ.get(
             "FBR_SANDBOX_HS_UOM_URL",
-            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
+            "https://gw.fbr.gov.pk/pdi/v2/HS_UOM",
+        ),
+        "rates": os.environ.get(
+            "FBR_SANDBOX_RATES_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SaleTypeToRate",
+        ),
+        "sro_schedules": os.environ.get(
+            "FBR_SANDBOX_SRO_SCHEDULES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/SroSchedule",
+        ),
+        "sro_items": os.environ.get(
+            "FBR_SANDBOX_SRO_ITEMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SROItem",
         ),
     },
     "sandbox_ssl": {
@@ -139,7 +151,19 @@ FBR_ENDPOINT_URLS = {
         ),
         "hs_uom": os.environ.get(
             "FBR_SANDBOX_SSL_HS_UOM_URL",
-            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
+            "https://gw.fbr.gov.pk/pdi/v2/HS_UOM",
+        ),
+        "rates": os.environ.get(
+            "FBR_SANDBOX_SSL_RATES_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SaleTypeToRate",
+        ),
+        "sro_schedules": os.environ.get(
+            "FBR_SANDBOX_SSL_SRO_SCHEDULES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/SroSchedule",
+        ),
+        "sro_items": os.environ.get(
+            "FBR_SANDBOX_SSL_SRO_ITEMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SROItem",
         ),
     },
     "production": {
@@ -157,7 +181,19 @@ FBR_ENDPOINT_URLS = {
         ),
         "hs_uom": os.environ.get(
             "FBR_PRODUCTION_HS_UOM_URL",
-            "https://gw.fbr.gov.pk/pdi/v1/HS_UOM",
+            "https://gw.fbr.gov.pk/pdi/v2/HS_UOM",
+        ),
+        "rates": os.environ.get(
+            "FBR_PRODUCTION_RATES_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SaleTypeToRate",
+        ),
+        "sro_schedules": os.environ.get(
+            "FBR_PRODUCTION_SRO_SCHEDULES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/SroSchedule",
+        ),
+        "sro_items": os.environ.get(
+            "FBR_PRODUCTION_SRO_ITEMS_URL",
+            "https://gw.fbr.gov.pk/pdi/v2/SROItem",
         ),
     },
 }
