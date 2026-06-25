@@ -65,6 +65,19 @@ class FBRReferenceView(APIView):
 
     endpoint_name = None
     required_params = ()
+    param_aliases = {}
+
+    def normalize_params(self, params):
+        normalized = dict(params)
+        for canonical_name, aliases in self.param_aliases.items():
+            if normalized.get(canonical_name) not in (None, ""):
+                continue
+            for alias in aliases:
+                value = normalized.get(alias)
+                if value not in (None, ""):
+                    normalized[canonical_name] = value
+                    break
+        return normalized
 
     def post(self, request):
         body = request.data
@@ -81,6 +94,7 @@ class FBRReferenceView(APIView):
                 {"error": "params must be a JSON object when provided."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        params = self.normalize_params(params)
 
         missing_params = [
             param for param in self.required_params if params.get(param) in (None, "")
@@ -152,21 +166,50 @@ class FBRUOMReferenceView(FBRReferenceView):
 class FBRHSUOMReferenceView(FBRReferenceView):
     endpoint_name = "hs_uom"
     required_params = ("hs_code", "annexure_id")
+    param_aliases = {
+        "hs_code": ("hsCode", "hs", "hsCodeId"),
+        "annexure_id": ("annexureId", "annexureID", "annexure"),
+    }
 
 
 class FBRRatesReferenceView(FBRReferenceView):
     endpoint_name = "rates"
     required_params = ("date", "transTypeId", "originationSupplier")
+    param_aliases = {
+        "transTypeId": ("trans_type_id", "transaction_type_id", "transactionTypeId"),
+        "originationSupplier": (
+            "origination_supplier",
+            "origination_supplier_csv",
+            "province_id",
+            "provinceId",
+        ),
+    }
 
 
 class FBRSROSchedulesReferenceView(FBRReferenceView):
     endpoint_name = "sro_schedules"
     required_params = ("rate_id", "date", "origination_supplier_csv")
+    param_aliases = {
+        "rate_id": ("rateId", "rateID", "rate"),
+        "origination_supplier_csv": (
+            "originationSupplier",
+            "origination_supplier",
+            "province_id",
+            "provinceId",
+        ),
+    }
 
 
 class FBRSROItemsReferenceView(FBRReferenceView):
     endpoint_name = "sro_items"
     required_params = ("date", "sro_id")
+    param_aliases = {
+        "sro_id": ("sroId", "sroID", "srO_ID"),
+    }
+
+
+class FBRSROItemCodesReferenceView(FBRReferenceView):
+    endpoint_name = "sro_item_codes"
 
 
 class HealthCheckView(APIView):

@@ -135,6 +135,10 @@ FBR_ENDPOINT_URLS = {
             "FBR_SANDBOX_SRO_ITEMS_URL",
             "https://gw.fbr.gov.pk/pdi/v2/SROItem",
         ),
+        "sro_item_codes": os.environ.get(
+            "FBR_SANDBOX_SRO_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/sroitemcode",
+        ),
     },
     "sandbox_ssl": {
         "post_invoice": os.environ.get(
@@ -165,6 +169,10 @@ FBR_ENDPOINT_URLS = {
             "FBR_SANDBOX_SSL_SRO_ITEMS_URL",
             "https://gw.fbr.gov.pk/pdi/v2/SROItem",
         ),
+        "sro_item_codes": os.environ.get(
+            "FBR_SANDBOX_SSL_SRO_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/sroitemcode",
+        ),
     },
     "production": {
         "post_invoice": os.environ.get(
@@ -194,6 +202,10 @@ FBR_ENDPOINT_URLS = {
         "sro_items": os.environ.get(
             "FBR_PRODUCTION_SRO_ITEMS_URL",
             "https://gw.fbr.gov.pk/pdi/v2/SROItem",
+        ),
+        "sro_item_codes": os.environ.get(
+            "FBR_PRODUCTION_SRO_ITEM_CODES_URL",
+            "https://gw.fbr.gov.pk/pdi/v1/sroitemcode",
         ),
     },
 }

@@ -5,6 +5,7 @@ from bridge.views import (
     FBRHSUOMReferenceView,
     FBRItemCodesReferenceView,
     FBRRatesReferenceView,
+    FBRSROItemCodesReferenceView,
     FBRSROItemsReferenceView,
     FBRSROSchedulesReferenceView,
     FBRUOMReferenceView,
@@ -43,9 +44,24 @@ urlpatterns = [
         name="fbr-reference-sro-schedules",
     ),
     path(
+        "v1/fbr/reference/sro-schedule/",
+        FBRSROSchedulesReferenceView.as_view(),
+        name="fbr-reference-sro-schedule",
+    ),
+    path(
         "v1/fbr/reference/sro-items/",
         FBRSROItemsReferenceView.as_view(),
         name="fbr-reference-sro-items",
+    ),
+    path(
+        "v1/fbr/reference/sro-item/",
+        FBRSROItemsReferenceView.as_view(),
+        name="fbr-reference-sro-item",
+    ),
+    path(
+        "v1/fbr/reference/sro-item-codes/",
+        FBRSROItemCodesReferenceView.as_view(),
+        name="fbr-reference-sro-item-codes",
     ),
     path("v1/fbr/invoices/", PostInvoiceViewProduction.as_view(), name="fbr-post-invoice"),
     path("v1/fbr/invoices_production/", PostInvoiceViewProduction.as_view(), name="fbr-post-invoice"),
