@@ -67,6 +67,12 @@ class FBRClient:
 
         return settings.FBR_ENDPOINTS["post_invoice"]
 
+    @staticmethod
+    def _build_display_url(url: str, params: dict | None = None) -> str:
+        if not params:
+            return url
+        return requests.Request("GET", url, params=params).prepare().url
+
     def _get_headers(
         self,
         extra_headers: dict | None = None,
@@ -125,13 +131,16 @@ class FBRClient:
         active_environment = (environment or self.environment).lower()
         token_present = bool(security_token or self.security_token)
 
+        display_url = self._build_display_url(url, params)
+
         logger.info(
-            "Forwarding FBR request endpoint=%s environment=%s method=%s token_present=%s url=%s",
+            "Forwarding FBR request endpoint=%s environment=%s method=%s token_present=%s params=%s url=%s",
             endpoint_name or endpoint_path or "custom",
             active_environment,
             method,
             token_present,
-            url,
+            params or {},
+            display_url,
         )
 
         request_kwargs = {
@@ -169,7 +178,7 @@ class FBRClient:
             "success": response.ok,
             "status_code": response.status_code,
             "data": response_data,
-            "fbr_url": url,
+            "fbr_url": display_url,
         }
 
         logger.info(
